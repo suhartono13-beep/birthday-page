@@ -6,13 +6,25 @@
     <title>生日快乐 🎂</title>
     <style>
         :root {
-            --primary-color: #ff6b81;
-            --bg-color: #fceef0;
+            /* 主题色：柔和的桃色 */
+            --primary-color: #ff8a71;
+            /* 渐变色：从紫到橙再到粉 */
+            --grad-color-1: #4158D0;
+            --grad-color-2: #C850C0;
+            --grad-color-3: #FFCC70;
+            --grad-color-4: #FF8A71;
         }
 
         body {
             margin: 0;
-            background: var(--bg-color);
+            /* 创建多色渐变背景，并设置足够大的背景大小以便动画移动
+              Colors: deep purple, magenta, gold, and peach
+            */
+            background: linear-gradient(45deg, var(--grad-color-1), var(--grad-color-2), var(--grad-color-3), var(--grad-color-4));
+            background-size: 400% 400%;
+            /* 背景颜色流动动画：30秒循环，平滑过渡
+            */
+            animation: gradientBG 30s ease infinite;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             display: flex;
@@ -21,23 +33,40 @@
             height: 100vh;
         }
 
-        /* 卡片容器 */
+        /* 背景渐变动画定义 */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 玻璃拟态卡片 
+           Glassmorphism: background blur, semi-transparent white, and thick border
+        */
         .card {
             width: 85%;
             max-width: 380px;
-            background: white;
+            /* 半透明白色背景 */
+            background: rgba(255, 255, 255, 0.4);
+            /* 关键：背景模糊效果 */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 24px;
             padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(255, 107, 129, 0.2);
+            /* 柔和的阴影 */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            /* 半透明边框，增加质感 */
+            border: 1px solid rgba(255, 255, 255, 0.3);
             z-index: 10;
             transition: transform 0.3s ease;
         }
 
         #title {
-            color: #444;
+            color: #222; /* 稍深的标题颜色，以便在玻璃背景上清晰显示 */
             margin-bottom: 30px;
-            font-weight: 600;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
         }
 
         /* 蛋糕动画 */
@@ -55,13 +84,13 @@
 
         /* 烛光微光效果 */
         .glow {
-            filter: drop-shadow(0 0 15px rgba(255, 200, 0, 0.8));
+            filter: drop-shadow(0 0 15px rgba(255, 200, 0, 0.9));
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
             0% { filter: drop-shadow(0 0 5px rgba(255, 200, 0, 0.5)); }
-            50% { filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.9)); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 200, 0, 1)); }
             100% { filter: drop-shadow(0 0 5px rgba(255, 200, 0, 0.5)); }
         }
 
@@ -81,10 +110,10 @@
         .primary {
             background: var(--primary-color);
             color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 138, 113, 0.4);
         }
 
-        .primary:hover { background: #ff4757; transform: translateY(-2px); }
+        .primary:hover { background: #ff7657; transform: translateY(-2px); }
 
         .hidden { display: none; opacity: 0; }
 
@@ -97,6 +126,22 @@
             pointer-events: none;
             z-index: 99;
         }
+
+        /* 背景装饰粒子 */
+        .bg-particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -104,7 +149,7 @@
 <div class="card">
     <h2 id="title">🎂 有人过生日吗？</h2>
     <div id="cake" class="cake-wrapper">🎂</div>
-    <p id="hint" style="color: #999; font-size: 14px;">点击蛋糕点燃蜡烛</p>
+    <p id="hint" style="color: #444; font-size: 14px; font-weight: 500;">点击蛋糕点燃蜡烛</p>
     <button id="blowBtn" class="btn primary hidden" onclick="blowCandles()">💨 吹灭蜡烛，许个愿</button>
 </div>
 
@@ -114,7 +159,13 @@
 
 <script>
 let step = 0;
-const colors = ['#ff6b81', '#ff4757', '#747d8c', '#ffa502', '#2ed573', '#1e90ff', '#ffffff'];
+// 烟花颜色列表，增加了更多高饱和度的节日颜色
+const colors = ['#ff6b81', '#ff4757', '#ffa502', '#2ed573', '#1e90ff', '#ffffff', '#FFD700', '#FF1493'];
+
+// 初始化：添加一些背景浮动粒子
+for (let i = 0; i < 20; i++) {
+    createBgParticle();
+}
 
 // 1. 点击蛋糕点燃
 document.getElementById("cake").onclick = function() {
@@ -152,10 +203,10 @@ function launchFireworks() {
         const y = Math.random() * window.innerHeight;
         const color = colors[Math.floor(Math.random() * colors.length)];
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 25; i++) { // 粒子数量稍微增加
             createParticle(x, y, color);
         }
-    }, 400);
+    }, 350); // 频率稍微增加
 }
 
 function createParticle(x, y, color) {
@@ -164,10 +215,12 @@ function createParticle(x, y, color) {
     p.style.left = x + "px";
     p.style.top = y + "px";
     p.style.backgroundColor = color;
+    // 添加一点发光效果，让粒子更闪亮
+    p.style.boxShadow = `0 0 5px ${color}`; 
     document.body.appendChild(p);
 
     const angle = Math.random() * Math.PI * 2;
-    const velocity = Math.random() * 120 + 50;
+    const velocity = Math.random() * 140 + 60; // 爆裂范围稍微增加
     const tx = Math.cos(angle) * velocity;
     const ty = Math.sin(angle) * velocity;
 
@@ -176,10 +229,24 @@ function createParticle(x, y, color) {
         { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
     ], {
         duration: 1000 + Math.random() * 500,
-        easing: 'cubic-bezier(0, .9, .57, 1)'
+        easing: 'cubic-bezier(0, .9, .57, 1)' // 贝塞尔曲线，先快后慢
     });
 
     anim.onfinish = () => p.remove();
+}
+
+// 4. 创建背景浮动粒子
+function createBgParticle() {
+    const p = document.createElement("div");
+    p.className = "bg-particle";
+    const size = Math.random() * 6 + 2; // 2px 到 8px
+    p.style.width = size + "px";
+    p.style.height = size + "px";
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.bottom = "-" + size + "px"; // 从屏幕下方开始
+    p.style.animationDelay = Math.random() * 10 + "s";
+    p.style.animationDuration = (Math.random() * 10 + 10) + "s"; // 10秒到20秒之间
+    document.body.appendChild(p);
 }
 </script>
 
