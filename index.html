@@ -1,4 +1,4 @@
-```html
+```html id="z8w4kc"
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -9,50 +9,61 @@
 <style>
 body {
     margin: 0;
-    background: linear-gradient(to top, #ff9a9e, #fad0c4);
-    font-family: Arial, sans-serif;
-    text-align: center;
-    color: white;
-    overflow: hidden;
+    background: #f5f5f5;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* 主容器（控制宽度） */
-.container {
-    max-width: 500px;
-    margin: auto;
-    padding: 20px;
+/* 页面容器（类似小程序页面） */
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* 卡片 */
+.card {
+    width: 90%;
+    max-width: 420px;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 /* 标题 */
 h1 {
-    margin-top: 15vh;
-    font-size: 8vw;
-    animation: glow 2s infinite alternate;
+    font-size: 26px;
+    color: #ff6b81;
+    margin-bottom: 10px;
 }
 
-/* 描述 */
+/* 文本 */
 p {
-    font-size: 4.5vw;
-    margin: 20px 0;
+    color: #666;
+    font-size: 16px;
 }
 
 /* 按钮 */
-button {
-    width: 80%;
-    max-width: 300px;
-    padding: 15px;
-    font-size: 4.5vw;
-    border: none;
+.btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
     border-radius: 12px;
-    background: #ff6b81;
-    color: white;
-    margin: 10px 0;
+    border: none;
+    font-size: 16px;
 }
 
-/* 发光动画 */
-@keyframes glow {
-    from { text-shadow: 0 0 10px white; }
-    to { text-shadow: 0 0 30px yellow; }
+/* 主按钮 */
+.primary {
+    background: #ff6b81;
+    color: white;
+}
+
+/* 次按钮 */
+.secondary {
+    background: #eee;
 }
 
 /* 爱心动画 */
@@ -72,7 +83,7 @@ button {
     position: absolute;
     width: 5px;
     height: 5px;
-    background: yellow;
+    background: orange;
     border-radius: 50%;
 }
 </style>
@@ -80,20 +91,23 @@ button {
 
 <body>
 
-<div class="container">
-    <h1>🎂 Happy Birthday！</h1>
-    <p>祝你天天开心，梦想成真 💖</p>
+<div class="page">
+    <div class="card">
+        <h1>🎂 生日快乐！</h1>
+        <p>愿你每天开心，万事顺意 💖</p>
 
-    <button onclick="showSurprise()">点我有惊喜 🎁</button>
-    <button onclick="toggleMusic()">🎵 音乐开关</button>
+        <button class="btn primary" onclick="showSurprise()">🎁 打开惊喜</button>
+        <button class="btn secondary" onclick="toggleMusic()">🎵 播放音乐</button>
+    </div>
 </div>
 
+<!-- 生日歌 -->
 <audio id="music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9bcb0b.mp3?filename=happy-birthday-254480.mp3">
 </audio>
 
 <script>
-// 爱心动画
+// 爱心
 setInterval(() => {
     let heart = document.createElement("div");
     heart.className = "heart";
@@ -101,13 +115,12 @@ setInterval(() => {
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.fontSize = Math.random() * 20 + 20 + "px";
     document.body.appendChild(heart);
-
     setTimeout(() => heart.remove(), 5000);
-}, 300);
+}, 400);
 
-// 点击烟花
+// 烟花
 document.addEventListener("click", (e) => {
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 15; i++) {
         let fw = document.createElement("div");
         fw.className = "firework";
         fw.style.left = e.clientX + "px";
@@ -115,33 +128,27 @@ document.addEventListener("click", (e) => {
         document.body.appendChild(fw);
 
         let angle = Math.random() * 2 * Math.PI;
-        let distance = Math.random() * 100;
+        let d = Math.random() * 80;
 
         fw.animate([
             { transform: "translate(0,0)" },
-            { transform: `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px)` }
-        ], {
-            duration: 800,
-            easing: "ease-out"
-        });
+            { transform: `translate(${Math.cos(angle)*d}px, ${Math.sin(angle)*d}px)` }
+        ], { duration: 700 });
 
-        setTimeout(() => fw.remove(), 800);
+        setTimeout(() => fw.remove(), 700);
     }
 });
 
 // 惊喜
 function showSurprise() {
-    alert("🎉 生日快乐！愿你每天都闪闪发光 ✨");
+    alert("🎉 祝你生日快乐！愿所有美好都属于你 ✨");
 }
 
-// 音乐控制
+// 音乐
 function toggleMusic() {
-    let music = document.getElementById("music");
-    if (music.paused) {
-        music.play();
-    } else {
-        music.pause();
-    }
+    let m = document.getElementById("music");
+    if (m.paused) m.play();
+    else m.pause();
 }
 </script>
 
