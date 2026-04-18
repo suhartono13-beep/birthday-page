@@ -1,4 +1,4 @@
-```html id="z8w4kc"
+```html
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -13,7 +13,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* 页面容器（类似小程序页面） */
+/* 居中页面 */
 .page {
     display: flex;
     justify-content: center;
@@ -32,19 +32,6 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* 标题 */
-h1 {
-    font-size: 26px;
-    color: #ff6b81;
-    margin-bottom: 10px;
-}
-
-/* 文本 */
-p {
-    color: #666;
-    font-size: 16px;
-}
-
 /* 按钮 */
 .btn {
     width: 100%;
@@ -55,28 +42,18 @@ p {
     font-size: 16px;
 }
 
-/* 主按钮 */
-.primary {
-    background: #ff6b81;
-    color: white;
+.primary { background: #ff6b81; color: white; }
+.secondary { background: #eee; }
+
+/* 蛋糕 */
+.cake {
+    font-size: 60px;
+    margin: 20px 0;
+    cursor: pointer;
 }
 
-/* 次按钮 */
-.secondary {
-    background: #eee;
-}
-
-/* 爱心动画 */
-.heart {
-    position: absolute;
-    color: pink;
-    animation: float 5s linear infinite;
-}
-
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
-}
+/* 隐藏 */
+.hidden { display: none; }
 
 /* 烟花 */
 .firework {
@@ -93,62 +70,70 @@ p {
 
 <div class="page">
     <div class="card">
-        <h1>🎂 生日快乐！</h1>
-        <p>愿你每天开心，万事顺意 💖</p>
 
-        <button class="btn primary" onclick="showSurprise()">🎁 打开惊喜</button>
-        <button class="btn secondary" onclick="toggleMusic()">🎵 播放音乐</button>
+        <h2 id="title">🎂 点蛋糕开始</h2>
+
+        <div id="cake" class="cake">🎂</div>
+
+        <button id="blowBtn" class="btn secondary hidden" onclick="blowCandles()">💨 吹蜡烛</button>
+
     </div>
 </div>
 
-<!-- 生日歌 -->
 <audio id="music" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9bcb0b.mp3?filename=happy-birthday-254480.mp3">
+    <source src="music.mp3">
 </audio>
 
 <script>
-// 爱心
-setInterval(() => {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = Math.random() * 20 + 20 + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 5000);
-}, 400);
+let step = 0;
 
-// 烟花
-document.addEventListener("click", (e) => {
-    for (let i = 0; i < 15; i++) {
-        let fw = document.createElement("div");
-        fw.className = "firework";
-        fw.style.left = e.clientX + "px";
-        fw.style.top = e.clientY + "px";
-        document.body.appendChild(fw);
-
-        let angle = Math.random() * 2 * Math.PI;
-        let d = Math.random() * 80;
-
-        fw.animate([
-            { transform: "translate(0,0)" },
-            { transform: `translate(${Math.cos(angle)*d}px, ${Math.sin(angle)*d}px)` }
-        ], { duration: 700 });
-
-        setTimeout(() => fw.remove(), 700);
+// 点蛋糕
+document.getElementById("cake").onclick = () => {
+    if (step === 0) {
+        document.getElementById("title").innerText = "许个愿吧 ✨";
+        document.getElementById("blowBtn").classList.remove("hidden");
+        step = 1;
     }
-});
+};
 
-// 惊喜
-function showSurprise() {
-    alert("🎉 祝你生日快乐！愿所有美好都属于你 ✨");
+// 吹蜡烛
+function blowCandles() {
+    let m = document.getElementById("music");
+
+    m.play().catch(()=>{});
+
+    document.getElementById("title").innerText = "🎉 生日快乐！🎉";
+    document.getElementById("blowBtn").classList.add("hidden");
+
+    launchFireworks();
+
+    alert("🎂 祝你生日快乐！愿所有愿望都实现 ✨");
 }
 
-// 音乐
-function toggleMusic() {
-    let m = document.getElementById("music");
-    if (m.paused) m.play();
-    else m.pause();
+// 烟花
+function launchFireworks() {
+    setInterval(() => {
+        let x = Math.random() * window.innerWidth;
+        let y = Math.random() * window.innerHeight;
+
+        for (let i = 0; i < 15; i++) {
+            let fw = document.createElement("div");
+            fw.className = "firework";
+            fw.style.left = x + "px";
+            fw.style.top = y + "px";
+            document.body.appendChild(fw);
+
+            let angle = Math.random() * 2 * Math.PI;
+            let d = Math.random() * 100;
+
+            fw.animate([
+                { transform: "translate(0,0)" },
+                { transform: `translate(${Math.cos(angle)*d}px, ${Math.sin(angle)*d}px)` }
+            ], { duration: 800 });
+
+            setTimeout(() => fw.remove(), 800);
+        }
+    }, 500);
 }
 </script>
 
