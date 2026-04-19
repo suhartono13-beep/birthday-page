@@ -99,24 +99,25 @@
             100% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
         }
 
-        /* 相册容器 (默认隐藏) */
+                /* 优化后的相册容器：把高度调大 */
         .album-wrapper {
             display: none;
             width: 100%;
-            height: 250px;
+            height: 380px; /* 【改动1】从 250px 调大到 380px，给竖版照片更多空间 */
             margin: 20px auto;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             border: 2px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(0, 0, 0, 0.2); /* 【新增】加一个半透明黑底，照片两边留白时会更好看 */
         }
-
-        /* 轮播图片 */
+        
+        /* 优化后的轮播图片：保证完整显示 */
         #slideImg {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 保证图片不变形，铺满容器 */
-            opacity: 0; /* 初始透明，用于淡入淡出动画 */
+            object-fit: contain; /* 【改动2】将 cover 改为 contain。意思是“完整显示整张图，绝不裁剪” */
+            opacity: 0; 
             transition: opacity 0.8s ease-in-out;
         }
 
